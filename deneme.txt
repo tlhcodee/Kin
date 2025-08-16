@@ -1,0 +1,2 @@
+tam round = 0
+yazdir("round su an: " + round)
