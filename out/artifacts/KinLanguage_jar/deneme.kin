@@ -1,4 +1,0 @@
-tam round = 5
-yazdir("round su an: " + round)
-round += 15
-yazdir("round arttirildi: " + round)
