@@ -6,5 +6,5 @@ package dev.tal.kin.core.cmd;
  * @tarih 8/17/2025
  */
 public interface ICommand {
-    public void execute(String line);
+    void execute(String line);
 }

@@ -31,10 +31,18 @@ public class PrintCommand implements ICommand {
         StringBuilder builder = new StringBuilder();
         StringBuilder varBuffer = new StringBuilder();
 
+        boolean insideBody = false;
+
         for (int i = 0; i < cleaned.length(); i++) {
             char c = cleaned.charAt(i);
 
             switch (c) {
+                case '{':
+                    insideBody = true;
+                    break;
+                case '}':
+                    insideBody = false;
+                    break;
                 case '"':
                     insideQuotes = !insideQuotes;
                     if (!insideQuotes && varBuffer.length() > 0) {
@@ -47,7 +55,7 @@ public class PrintCommand implements ICommand {
                     if (varBuffer.length() > 0) {
                         String varName = varBuffer.toString().trim();
                         if (variables.containsKey(varName)) {
-                            Object val = variables.get(varName).getValue(); // <-- BURASI
+                            Object val = variables.get(varName).getValue();
                             builder.append(val != null ? val.toString() : "null");
                         } else {
                             builder.append(varName);
@@ -57,10 +65,12 @@ public class PrintCommand implements ICommand {
                     break;
 
                 default:
-                    if (insideQuotes) {
-                        builder.append(c);
-                    } else {
-                        varBuffer.append(c);
+                    if(!insideBody) {
+                        if (insideQuotes) {
+                            builder.append(c);
+                        } else {
+                            varBuffer.append(c);
+                        }
                     }
                     break;
             }

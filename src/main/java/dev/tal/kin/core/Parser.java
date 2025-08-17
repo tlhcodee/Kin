@@ -1,16 +1,16 @@
 package dev.tal.kin.core;
 
 import dev.tal.kin.core.cmd.impl.PrintCommand;
+import dev.tal.kin.core.control.impl.IFControl;
 import dev.tal.kin.core.variables.IVariable;
+import dev.tal.kin.core.variables.operations.types.DecrementOp;
 import dev.tal.kin.core.variables.operations.types.IncrementOp;
+import dev.tal.kin.core.variables.operations.types.MultiplyOp;
 import lombok.Getter;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @proje KinLanguage
@@ -22,55 +22,46 @@ public class Parser {
     @Getter
     private final HashMap<String, IVariable> variables = new HashMap<>();
 
-    /*
-     * parse(list<string>: arg)
-     * Constructor gorevi gorur
-     * dongu icerisinde parse komut ve islevlerini calistirir.
-     * dosyayi okur ve islemleri tamamlar
-     */
+    private final IFControl ifControl = new IFControl(this);
+
     public Parser parse(List<String> fileAsList) throws IOException {
-        for (String line : fileAsList) {
-            boolean startsWithInt = line.startsWith("tam");
+        for (int i = 0; i < fileAsList.size(); i++) {
+            String rawLine = fileAsList.get(i);
+            String line = rawLine.trim();
+            if (line.isEmpty() || line.startsWith("//")) continue;
+
+            boolean startsWithInt = line.startsWith("tam ");
             boolean startsWithCommand = line.startsWith("yazdir");
-            boolean isIncrement = line.contains("+="); // <-- BURASI
+            boolean isControl = line.startsWith("eger");
+
+            boolean isIncrement = !isControl && !startsWithCommand && (line.contains("+=") || line.endsWith("++"));
+            boolean isDecrement = !isControl && !startsWithCommand && (line.contains("-=") || line.endsWith("--"));
+            boolean isMultiply = !isControl && line.contains("*=");
 
             if (startsWithInt) {
-                doParseVariable(fileAsList, line);
+                doParseVariable(line);
             } else if (startsWithCommand) {
                 doParseCommand(line);
+            } else if (isControl) {
+                i = ifControl.execute(fileAsList, line, i);
             } else if (isIncrement) {
                 new IncrementOp(this).check(fileAsList, line);
+            } else if (isDecrement) {
+                new DecrementOp(this).check(fileAsList, line);
+            } else if (isMultiply) {
+                new MultiplyOp(this).check(fileAsList, line);
             }
         }
-
         return this;
     }
 
-    /*
-    * doParseCommand(string: arg)
-    * Basitce, syntax komutlari icin parse islemi
-    * degiskenler ve bir suru seyi hafizadan ceker
-    */
     private void doParseCommand(String line) {
-        String cmd = "";
-        if (line.startsWith("yazdir"))
-            cmd = "yazdir";
-
-        switch (cmd) {
-            case "yazdir":
-                new PrintCommand(this).execute(line);
-                break;
+        if (line.startsWith("yazdir")) {
+            new PrintCommand(this).execute(line);
         }
     }
 
-    /*
-     * doParseInt(string: arg)
-     * tam, adi altinda variablelara yer verir
-     * algiladigi variable syntaxini isim ve degeri ile kaydeder.
-     */
-    private void doParseVariable(List<String> lines, String line) {
-        IVariable.Type type = IVariable.Type.INTEGER;
-
+    private void doParseVariable(String line) {
         String[] split = line.split("=");
         if (split.length < 2) return;
 
@@ -78,6 +69,5 @@ public class Parser {
         int value = Integer.parseInt(split[1].trim());
 
         variables.put(name, new IVariable(IVariable.Type.INTEGER, name, value));
-
     }
 }

@@ -12,18 +12,18 @@ import java.util.List;
  * @gelistirici talyazilim
  * @tarih 8/17/2025
  */
-public class IncrementOp extends VarOperation {
+public class DecrementOp extends VarOperation {
 
-    public IncrementOp(Parser parser) {
-        super(parser, "+=");
+    public DecrementOp(Parser parser) {
+        super(parser, "-=");
     }
 
     @Override
     public void check(List<String> lines, String line) {
-        String[] split = line.split("\\+=");
+        String[] split = line.split("\\-=");
 
         String clearedName = split[0].trim();
-        int amount = line.contains("++") ? 1 : Integer.parseInt(split[1].trim());
+        int amount = line.contains("--") ? 1 : Integer.parseInt(split[1].trim());
 
         IVariable variable = getParser().getVariables().get(clearedName);
 
@@ -31,7 +31,7 @@ public class IncrementOp extends VarOperation {
             switch (variable.getType()) {
                 case INTEGER:
                     int current = (Integer) variable.getValue();
-                    int updated = current + amount;
+                    int updated = current - amount;
                     variable.setValue(updated);
                     break;
             }
@@ -39,5 +39,4 @@ public class IncrementOp extends VarOperation {
             System.out.println(ErrorMessages.VAROP_NAME_NOT_FOUND);
         }
     }
-
 }

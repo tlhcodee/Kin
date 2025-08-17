@@ -8,5 +8,5 @@ import java.util.List;
  * @tarih 8/17/2025
  */
 public interface IControl {
-    void execute(List<String> lines, String line);
+    int execute(List<String> lines, String line, int index);
 }
