@@ -37,12 +37,6 @@ public class PrintCommand implements ICommand {
             char c = cleaned.charAt(i);
 
             switch (c) {
-                case '{':
-                    insideBody = true;
-                    break;
-                case '}':
-                    insideBody = false;
-                    break;
                 case '"':
                     insideQuotes = !insideQuotes;
                     if (!insideQuotes && varBuffer.length() > 0) {
@@ -65,12 +59,10 @@ public class PrintCommand implements ICommand {
                     break;
 
                 default:
-                    if(!insideBody) {
-                        if (insideQuotes) {
-                            builder.append(c);
-                        } else {
-                            varBuffer.append(c);
-                        }
+                    if (insideQuotes) {
+                        builder.append(c);
+                    } else {
+                        varBuffer.append(c);
                     }
                     break;
             }

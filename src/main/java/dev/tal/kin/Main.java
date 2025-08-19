@@ -4,13 +4,14 @@ import dev.tal.kin.core.Parser;
 import dev.tal.kin.core.Reader;
 import dev.tal.kin.error.ErrorMessages;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
 public class Main {
-    
+
     public static void main(String[] args) {
         switch(args.length) {
             case 0:
