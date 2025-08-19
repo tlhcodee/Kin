@@ -1,47 +1,63 @@
 # KinLanguage
 
-KinLanguage, Türkçe tabanlı basit bir yorumlayıcı (interpreter)
-dilidir.\
-Amaç, temel programlama mantığını Türkçe sözdizimi ile göstermek.
+KinLanguage, **Türkçe tabanlı basit bir yorumlayıcı (interpreter) programlama dili**dir.  
+Amaç, temel programlama mantığını Türkçe sözdizimi ile öğretmek ve kolayca anlaşılır bir deneyim sunmaktır.
 
-------------------------------------------------------------------------
+---
 
 ## ✨ Özellikler
 
 -   **Değişken tanımlama** (`tam`)
 -   **Koşullu ifadeler** (`eger`)
+-   **Döngüler** (`dongu`)
 -   **Konsola çıktı verme** (`yazdir`)
 -   **Artırma / Azaltma** (`+=`, `++`, `-=`, `--`)
+-   **Yorum satırları** (`#`)
 
-------------------------------------------------------------------------
+---
 
 ## 🚀 Örnek Kod
 
-``` plaintext
+```plaintext
+# Bu bir yorum satırıdır, çalıştırılmaz.
+
 tam round = 0
-tam val = 5
+tam limit = 10
 
-round += 1
+dongu(15) {
+    round += 1
 
-eger(round < val) {
-    yazdir("aaaaaa")
-}
+    eger(round == 5) ise
+        atla
+    }
 
-round += 15
+    eger(round == 8) ise
+        bitir
+    }
 
-eger(round > val) {
-    yazdir("buyuk")
+    yazdir("Round: " + round)
+
+    eger(round > limit) ise {
+        yazdir("Limit aşıldı! -> " + round)
+    }
 }
 ```
 
 ### 📌 Beklenen Çıktı
 
-``` plaintext
-aaaaaa
-buyuk
+```plaintext
+Round: 1
+Round: 2
+Round: 3
+Round: 4
+Round: 6
+Round: 7
 ```
 
-------------------------------------------------------------------------
+(`round == 5` → `atla` çalıştı, o iterasyon atlandı.  
+ `round == 8` → `bitir` çalıştı, döngü kırıldı.)
+
+---
 
 ## 🔑 Sözdizimi Açıklamaları
 
@@ -49,51 +65,89 @@ buyuk
 
 Bir tam sayı değişkeni tanımlamak için `tam` kullanılır:
 
-``` plaintext
+```plaintext
 tam skor = 10
 ```
 
-Bu satır, `skor` isminde bir değişken oluşturur ve değerini `10` yapar.
-
-------------------------------------------------------------------------
+---
 
 ### 2. Koşullar (`eger`)
 
-Koşullu ifadeler için `eger (şart) { ... }` yapısı kullanılır:
+Koşullu ifadeler için:
 
-``` plaintext
+```plaintext
 eger(skor > 5) {
     yazdir("Yeterli skor!")
 }
 ```
 
-`eger` içindeki şart **doğruysa** süslü parantez içindeki kod çalışır.
-Yanlışsa atlanır.
+Artık **önceden tanımlanmış değişken olmasa da** direkt kullanılabilir:
 
-------------------------------------------------------------------------
+```plaintext
+eger(5 < 10) {
+    yazdir("Koşul doğru!")
+}
+```
 
-### 3. Yazdırma (`yazdir`)
+---
 
-Konsola çıktı vermek için `yazdir` komutu kullanılır:
+### 3. Döngüler (`dongu`)
 
-``` plaintext
+Belirtilen tekrar sayısı kadar kod çalıştırır:
+
+```plaintext
+dongu(3) {
+    yazdir("Merhaba")
+}
+```
+
+Çıktı:
+
+```plaintext
+Merhaba
+Merhaba
+Merhaba
+```
+
+#### 🔄 Özel Anahtarlar
+- `atla` → `continue` (o turu atla, sonraki tura geç)  
+- `bitir` → `break` (döngüyü tamamen kır)
+
+---
+
+### 4. Yazdırma (`yazdir`)
+
+Konsola çıktı vermek için:
+
+```plaintext
 yazdir("Merhaba Dünya")
 ```
 
 Değişkenlerle birleştirme yapılabilir:
 
-``` plaintext
+```plaintext
 tam adim = 5
 yazdir("Adım sayısı: " + adim)
 ```
 
 Çıktı:
 
-``` plaintext
+```plaintext
 Adım sayısı: 5
 ```
 
-------------------------------------------------------------------------
+---
+
+### 5. Yorum Satırları (`#`)
+
+`#` ile başlayan satırlar çalıştırılmaz:
+
+```plaintext
+# Bu satır yorumdur
+tam x = 5 # satırın sonunda da kullanılabilir
+```
+
+---
 
 ## 🛠 Geliştirme Durumu
 
@@ -101,12 +155,23 @@ Adım sayısı: 5
 -   [x] Artırma / Azaltma
 -   [x] `eger` kontrol yapısı
 -   [x] Konsola `yazdir`
--   [ ] Döngüler (`dongu`)
+-   [x] Döngüler (`dongu`)
+-   [x] Yorum satırları
 -   [ ] Fonksiyonlar (`fonk`)
 -   [ ] String tip desteği
 
-------------------------------------------------------------------------
+---
+
+## 📢 Güncellemeler
+
+### **Update 0.2 – Döngüler ve Daha Fazlası**
+- Döngü sistemi eklendi → `dongu(tekrar)`
+- `IF` artık önceden oluşturulmuş değişken gerektirmiyor (`eger(5 < 10)`)
+- `atla` (continue) ve `bitir` (break) desteği eklendi
+- Yorum satırları (`#`) eklendi
+- Kod tabanı iyileştirildi, daha modern ve temiz hale getirildi
+
+---
 
 ## 📄 Lisans
-
 MIT License altında serbestçe kullanılabilir.
